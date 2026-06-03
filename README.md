@@ -1,58 +1,173 @@
-Engelsiz Nota e-kütüphane NVDA eklentisi
+# Engelsiz Nota
 
-• Geliştirici: Mehmet Aykurt <m.aykurt38@gmail.com>
+**Engelsiz Nota**, NVDA ekran okuyucusu kullanıcıları için geliştirilmiş erişilebilir bir e-katalog asistanıdır.
 
-• Sürüm: 1.0.0
+Eklenti, Engelsiz Nota sistemindeki eserlere daha hızlı, düzenli ve klavye ile erişilebilir biçimde ulaşılmasını sağlamak amacıyla hazırlanmıştır. Kullanıcı; eser adı, alındığı kurum, besteci, eser türü ve çalgı türü gibi ölçütlerle arama yapabilir, eser ayrıntılarını inceleyebilir, ilgili eser sayfasını tarayıcıda açabilir ve eserleri favorilerine ekleyebilir.
 
-• Lisans: GNU Genel Kamu Lisansı
+## Sürüm
 
-Eklenti hakkında
+```text
+1.1.0
+```
 
-Engelsiz Nota eklentisi, görme engelli müzisyenlerin, müzik öğrencilerinin ve müzikseverlerin Engelsiz Nota e-katalog sistemindeki eserlere NVDA ekran okuyucusu üzerinden daha hızlı, düzenli ve erişilebilir biçimde ulaşabilmesi amacıyla geliştirilmiştir.
+## Geliştirici
 
-Eklenti; eser adı, kurum, besteci, eser türü ve çalgı türü gibi ölçütlerle arama yapmayı kolaylaştırır. Böylece kullanıcı, Engelsiz Nota arşivindeki Braille (kabartma) nota kaynaklarına giden ilgili eser sayfalarına daha kısa yoldan erişebilir.
+```text
+Mehmet Aykurt
+```
 
-Kullanım ve kısayollar
+İletişim:
 
-Arama penceresini açmak için Control + Shift + E kısayolunu kullanabilir veya NVDA menüsü > Araçlar > Engelsiz Nota yolunu izleyebilirsiniz.
+```text
+m.aykurt38@gmail.com
+```
 
-Arama penceresinde eser adı yazabilir; alındığı kurum, besteci, eser türü ve çalgı türü alanlarından seçim yaparak sonuçları daraltabilirsiniz. Listelenen bir eserin ayrıntılarını görmek için ilgili satır üzerinde Enter tuşuna basmanız yeterlidir.
+## Genel Amaç
 
-Eser ayrıntı penceresinde eserin adı, bestecisi, türü, çalgı bilgisi ve ilgili sayfa bağlantısı yer alır. Bu pencereden eser bilgilerini panoya kopyalayabilir, eseri favorilerinize ekleyebilir veya Engelsiz Nota sitesindeki ilgili sayfayı tarayıcıda açabilirsiniz.
+Engelsiz Nota eklentisinin temel amacı, görme engelli müzisyenlerin, müzik öğrencilerinin ve müzikle ilgilenen NVDA kullanıcılarının Engelsiz Nota e-katalog sistemindeki eserlere daha erişilebilir ve düzenli biçimde ulaşabilmesini sağlamaktır.
 
-Favoriler
+## Başlıca Özellikler
 
-Sık kullandığınız, çalıştığınız veya daha sonra yeniden ulaşmak istediğiniz eserleri Favorilere Ekle düğmesiyle kaydedebilirsiniz.
+- Eser adına göre arama yapma.
+- Alındığı kurum, besteci, eser türü ve çalgı türü alanlarıyla aramayı daraltma.
+- Arama sonuçlarını erişilebilir liste yapısında görüntüleme.
+- Eser ayrıntılarını inceleme.
+- İlgili eser sayfasını tarayıcıda açma.
+- Eser bilgilerini panoya kopyalama.
+- Eserleri favorilere ekleme ve favorilerden çıkarma.
+- Favori eserleri ayrı pencerede listeleme.
+- Yardım dosyasına doğrudan eklenti penceresinden erişme.
+- Engelsiz Nota web sayfası üzerinden yorum ve geri bildirim bırakma.
+- İleride farklı dillere çevrilebilmesi için hazırlanmış çeviri altyapısı.
 
-Kaydettiğiniz eserlere NVDA menüsü > Araçlar > Engelsiz Nota > Favorilerim yoluyla ulaşabilirsiniz. Favori kayıtları yalnızca bilgisayarınızdaki NVDA yapılandırma alanında saklanır.
+## Sürüm 1.1.0 ile Gelen Düzenlemeler
 
-Erişilebilirlik ve kullanım ilkesi
+- NVDA Araçlar menüsündeki Engelsiz Nota alt menüsü kaldırıldı.
+- Favorilerim, Yardım ve Yorum bırak seçenekleri ana pencereye taşındı.
+- Yorum bırak düğmesi, Engelsiz Nota eklentisine ait web sayfasını açacak biçimde düzenlendi.
+- Girdi Hareketleri bölümünde yalnızca Engelsiz Nota arama penceresini açan komut bırakıldı.
+- Pencere içi kısayollar yalnızca Engelsiz Nota penceresi açıkken çalışacak biçimde korundu.
+- Kullanıcıya görünen metinler gözden geçirildi.
+- Çeviri altyapısı hazırlandı.
+- Yardım dosyası, README.md ve update.json dosyaları 1.1.0 sürümüne göre güncellendi.
 
-Bu eklenti, görme engelli kullanıcıların klavye ve ekran okuyucu ile bağımsız hareket edebilmesini önceleyen sade bir yapıyla hazırlanmıştır. Gereksiz görsel unsurlardan kaçınılmış; işlem adımları, anlaşılır metinler ve doğrudan erişilebilir denetimler üzerinden düzenlenmiştir.
+## Kullanım
 
-Eklenti, Engelsiz Nota sitesindeki nota dosyalarını doğrudan indirmez. Kullanıcıyı ilgili eser sayfasına yönlendirir. İndirme ve erişim işlemleri, Engelsiz Nota platformunun kendi kullanım koşulları ve giriş süreçleri çerçevesinde gerçekleştirilir.
+Eklenti varsayılan olarak aşağıdaki kısayol ile açılır:
 
-Gizlilik
+```text
+NVDA+Shift+E
+```
 
-Engelsiz Nota eklentisi herhangi bir kişisel veri toplamaz, dış bir sunucuya kullanıcı verisi göndermez ve kullanıcı etkinliğini izlemez.
+Kullanıcı isterse bu kısayolu NVDA menüsünde yer alan **Tercihler > Girdi Hareketleri** bölümünden değiştirebilir.
 
-Favoriler özelliğiyle oluşturulan kayıtlar, yalnızca kullanıcının kendi bilgisayarında tutulur. Bu kayıtlar; eser adı, besteci, eser türü, çalgı türü ve ilgili eser bağlantısından oluşur.
+Girdi Hareketleri bölümünde yalnızca Engelsiz Nota arama penceresini açan komut bulunur. Arama, temizleme, favoriler, yardım, yorum bırakma ve kapatma işlemlerine ait kısayollar yalnızca Engelsiz Nota penceresi açıkken geçerlidir.
 
-Telif, emek ve etik sorumluluk
+## Ana Pencere
 
-Bu eklenti; eser sahiplerinin haklarına, Engelsiz Nota platformunun emeğine ve erişilebilir kültür hizmetlerinin taşıdığı toplumsal değere saygı anlayışıyla hazırlanmıştır.
+Ana pencerede sırasıyla şu bölümler yer alır:
 
-Amaç, eserlerin izinsiz biçimde çoğaltılması veya dağıtılması değil; görme engelli kullanıcıların var olan yasal ve erişilebilir kaynaklara daha kolay ulaşmasını sağlamaktır.
+- Eser adı alanı.
+- Alındığı kurum seçim kutusu.
+- Besteci seçim kutusu.
+- Eser türü seçim kutusu.
+- Çalgı türü seçim kutusu.
+- Ara ve Temizle düğmeleri.
+- Arama sonuçları listesi.
+- Sayfa alanı.
+- Favorilerim, Yardım, Yorum bırak ve Kapat düğmeleri.
 
-Geliştirici notu
+## Klavye Kısayolları
 
-Engelsiz Nota arşivini görme engelli müzisyenlerin ve müzikseverlerin hizmetine sunan Eğitimde Görme Engelliler Derneğine (EGED) ve Engelsiz Nota ekibine teşekkürlerimi sunarım.
+Ana pencere açıkken kullanılabilecek temel erişim tuşları:
 
-Bu çalışma; notaya erişimi kolaylaştırmak, emeğe saygıyı korumak ve müziğin iyileştirici sesini daha erişilebilir kılmak amacıyla hazırlanmıştır.
+```text
+Alt+E: Eser adı alanına gider.
+Alt+M: Alındığı kurum seçim kutusuna gider.
+Alt+B: Besteci seçim kutusuna gider.
+Alt+T: Eser türü seçim kutusuna gider.
+Alt+Ç: Çalgı türü seçim kutusuna gider.
+Alt+A: Arama işlemini başlatır.
+Alt+Z: Arama alanlarını temizler.
+Alt+P: Sayfa alanına gider.
+Alt+F: Favorilerim penceresini açar.
+Alt+H: Yardım dosyasını açar.
+Alt+O: Engelsiz Nota web sayfasını açarak yorum bırakma bölümüne erişim sağlar.
+Alt+K: Engelsiz Nota penceresini kapatır.
+```
 
-İletişim ve geri bildirim
+## Favoriler
 
-Eklentiyle ilgili görüş, öneri ve hata bildirimlerinizi m.aykurt38@gmail.com e-posta adresi üzerinden iletebilirsiniz.
+Kullanıcı, sık erişmek istediği eserleri favorilerine ekleyebilir. Favori kayıtları kullanıcının NVDA yapılandırma klasöründe yerel bir JSON dosyasında saklanır.
 
-Kullanıcılardan gelecek geri bildirimler, Engelsiz Nota eklentisinin daha kararlı, erişilebilir ve yararlı hâle gelmesine katkı sağlayacaktır.
+Favori dosyası:
 
+```text
+engelsiznota_favoriler.json
+```
+
+## Gizlilik
+
+Engelsiz Nota eklentisi, arama yapılırken Engelsiz Nota web sitesindeki e-katalog sayfalarına erişir. Bunun dışında favori kayıtlarını, kişisel kullanım verilerini veya kullanıcının bilgisayarındaki herhangi bir dosyayı kendiliğinden bir sunucuya göndermez.
+
+Yorum bırak düğmesi yalnızca kullanıcının isteğiyle Engelsiz Nota eklentisine ait web sayfasını tarayıcıda açar.
+
+## Yorum ve Geri Bildirim
+
+Kullanıcılar, eklentiye ilişkin görüş, öneri ve değerlendirmelerini Engelsiz Nota web sayfası üzerinden iletebilir.
+
+Engelsiz Nota sayfası:
+
+```text
+https://mehmetaykurt.com.tr/erisilebilirlik/engelsiz-nota.html
+```
+
+## Çeviri Katkıları
+
+Engelsiz Nota Türkçe olarak hazırlanmıştır. Bununla birlikte, ileride farklı dillere çevrilebilmesi için eklenti metinleri çeviriye uygun biçimde düzenlenmiştir.
+
+Temel çeviri dosyaları:
+
+```text
+po/engelsiz_nota.pot
+locale/en/LC_MESSAGES/nvda.po
+```
+
+Çeviri yapılırken:
+
+- `msgid` satırları değiştirilmemelidir.
+- Yalnızca `msgstr` alanları çevrilmelidir.
+- `&` işareti erişim tuşunu belirtir; hedef dilde uygun harfin önüne taşınabilir.
+- `{0}`, `{1}` gibi yer tutucular aynen korunmalıdır.
+
+Tamamlanmış çeviri, derlenmiş `nvda.mo` dosyası olarak ilgili dil klasörüne eklenir.
+
+Örnek:
+
+```text
+locale/en/LC_MESSAGES/nvda.mo
+```
+
+## Yardım Dosyası
+
+Ayrıntılı kullanım ve bilgilendirme kılavuzu eklenti içinde şu konumda yer alır:
+
+```text
+doc/tr/readme.html
+```
+
+NVDA içinden Yardım düğmesine basıldığında bu dosya açılır.
+
+## Lisans
+
+Bu eklenti **GNU General Public License v2.0** kapsamında lisanslanmıştır.
+
+## Telif ve Geliştirici Bildirimi
+
+```text
+Telif hakkı © 2026 Mehmet Aykurt
+```
+
+Engelsiz Nota NVDA eklentisi Mehmet Aykurt tarafından geliştirilmiştir.
+
+Bu eklentinin değiştirilmiş sürümleri dağıtılırken yapılan değişikliklerin açıkça belirtilmesi ve özgün çalışmanın Mehmet Aykurt tarafından geliştirildiği bilgisinin korunması gerekir.

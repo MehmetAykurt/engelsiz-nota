@@ -9,6 +9,7 @@
 # altında açık kaynak kodlu olarak dağıtılmaktadır.
 
 import globalPluginHandler
+import addonHandler
 import wx
 import gui
 import urllib.request
@@ -24,11 +25,15 @@ import globalVars
 from logHandler import log
 
 
+addonHandler.initTranslation()
+
+
 EKLENTI_ADI = "Engelsiz Nota"
 ANA_SITE_ADRESI = "https://www.engelsiznota.org"
 ESERLER_ADRESI = ANA_SITE_ADRESI + "/eserler"
 KULLANICI_ARACISI = "Mozilla/5.0 (Windows NT 10.0; NVDA; Engelsiz Nota eklentisi)"
 FAVORILER_DOSYASI = os.path.join(globalVars.appArgs.configPath, "engelsiznota_favoriler.json")
+YORUM_SAYFASI_ADRESI = "https://mehmetaykurt.com.tr/erisilebilirlik/engelsiz-nota.html"
 
 
 def html_metnini_temizle(metin):
@@ -70,9 +75,9 @@ def favori_kaydini_temizle(eser):
 
     return {
         "isim": isim,
-        "besteci": str(eser.get("besteci", "Bilinmiyor")).strip() or "Bilinmiyor",
-        "tur": str(eser.get("tur", "Bilinmiyor")).strip() or "Bilinmiyor",
-        "calgi": str(eser.get("calgi", "Bilinmiyor")).strip() or "Bilinmiyor",
+        "besteci": str(eser.get("besteci", _("Bilinmiyor"))).strip() or _("Bilinmiyor"),
+        "tur": str(eser.get("tur", _("Bilinmiyor"))).strip() or _("Bilinmiyor"),
+        "calgi": str(eser.get("calgi", _("Bilinmiyor"))).strip() or _("Bilinmiyor"),
         "link": baglanti_adresini_duzenle(link),
     }
 
@@ -131,16 +136,57 @@ def favorileri_kaydet(liste):
         return False
 
 
+def eklenti_kok_klasorunu_al():
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def yardim_dosyasini_ac(parent=None):
+    kok_klasor = eklenti_kok_klasorunu_al()
+    yardim_yollari = [
+        os.path.join(kok_klasor, "doc", "tr", "readme.html"),
+        os.path.join(kok_klasor, "doc", "readme.html"),
+    ]
+
+    for yardim_yolu in yardim_yollari:
+        if os.path.exists(yardim_yolu):
+            try:
+                os.startfile(yardim_yolu)
+                ui.message(_("Engelsiz Nota yardım dosyası açılıyor."))
+                return
+            except Exception:
+                log.exception("Engelsiz Nota yardım dosyası açılamadı.")
+                ui.message(_("Yardım dosyası tarayıcıda açılamadı."))
+                return
+
+    ui.message(_("Yardım dosyası doc/tr klasöründe bulunamadı."))
+
+
+def yorum_sayfasini_ac():
+    try:
+        if webbrowser.open(YORUM_SAYFASI_ADRESI):
+            ui.message(_("Engelsiz Nota sayfası tarayıcıda açılıyor."))
+            return
+    except Exception:
+        log.exception("Engelsiz Nota yorum sayfası webbrowser ile açılamadı.")
+
+    try:
+        os.startfile(YORUM_SAYFASI_ADRESI)
+        ui.message(_("Engelsiz Nota sayfası tarayıcıda açılıyor."))
+    except Exception:
+        log.exception("Engelsiz Nota yorum sayfası açılamadı.")
+        ui.message(_("Engelsiz Nota sayfası açılamadı."))
+
+
 class DetayPenceresi(wx.Dialog):
     def __init__(self, parent, eser):
         self.eser = favori_kaydini_temizle(eser) or {
-            "isim": "Bilinmeyen eser",
-            "besteci": "Bilinmiyor",
-            "tur": "Bilinmiyor",
-            "calgi": "Bilinmiyor",
+            "isim": _("Bilinmeyen eser"),
+            "besteci": _("Bilinmiyor"),
+            "tur": _("Bilinmiyor"),
+            "calgi": _("Bilinmiyor"),
             "link": ESERLER_ADRESI,
         }
-        super(DetayPenceresi, self).__init__(parent, title="Eser detayı - " + self.eser["isim"])
+        super(DetayPenceresi, self).__init__(parent, title=_("Eser detayı - {0}").format(self.eser["isim"]))
 
         self.favoriler = favorileri_yukle()
         self.favoride_mi = any(f["link"] == self.eser["link"] for f in self.favoriler)
@@ -148,31 +194,31 @@ class DetayPenceresi(wx.Dialog):
 
         duzen = wx.BoxSizer(wx.VERTICAL)
 
-        self.bilgi_metni = "Eser adı: " + self.eser["isim"] + "\n"
-        self.bilgi_metni += "Besteci: " + self.eser["besteci"] + "\n"
-        self.bilgi_metni += "Eser türü: " + self.eser["tur"] + "\n"
-        self.bilgi_metni += "Çalgı türü: " + self.eser["calgi"] + "\n\n"
-        self.bilgi_metni += "Bu eserin Braille (kabartma) nota dosyalarını bilgisayarınıza indirmek için lütfen aşağıdaki 'Tarayıcıda aç' düğmesini kullanarak Engelsiz Nota sitesine gidiniz. İndirme işlemi için siteye giriş yapmanız gerekir."
+        self.bilgi_metni = _("Eser adı: ") + self.eser["isim"] + "\n"
+        self.bilgi_metni += _("Besteci: ") + self.eser["besteci"] + "\n"
+        self.bilgi_metni += _("Eser türü: ") + self.eser["tur"] + "\n"
+        self.bilgi_metni += _("Çalgı türü: ") + self.eser["calgi"] + "\n\n"
+        self.bilgi_metni += _("Bu eserin Braille (kabartma) nota dosyalarını bilgisayarınıza indirmek için lütfen aşağıdaki 'Tarayıcıda Aç' düğmesini kullanarak Engelsiz Nota sitesine gidiniz. İndirme işlemi için siteye giriş yapmanız gerekir.")
 
         self.metin_kutusu = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY, value=self.bilgi_metni)
         duzen.Add(self.metin_kutusu, 1, wx.ALL | wx.EXPAND, 5)
 
         buton_duzeni = wx.BoxSizer(wx.HORIZONTAL)
 
-        tarayici_butonu = wx.Button(self, label="Tarayıcıda &aç")
+        tarayici_butonu = wx.Button(self, label=_("Tarayıcıda &Aç"))
         tarayici_butonu.Bind(wx.EVT_BUTTON, self.tarayicida_ac)
         buton_duzeni.Add(tarayici_butonu, 0, wx.ALL, 5)
 
-        kopyala_butonu = wx.Button(self, label="Bilgileri &kopyala")
+        kopyala_butonu = wx.Button(self, label=_("Bilgileri &Kopyala"))
         kopyala_butonu.Bind(wx.EVT_BUTTON, self.bilgileri_kopyala)
         buton_duzeni.Add(kopyala_butonu, 0, wx.ALL, 5)
 
-        fav_etiket = "Favorilerden &çıkar" if self.favoride_mi else "&Favorilere ekle"
+        fav_etiket = _("Favorilerden &Çıkar") if self.favoride_mi else _("&Favorilere Ekle")
         self.fav_butonu = wx.Button(self, label=fav_etiket)
         self.fav_butonu.Bind(wx.EVT_BUTTON, self.favori_islem)
         buton_duzeni.Add(self.fav_butonu, 0, wx.ALL, 5)
 
-        kapat_butonu = wx.Button(self, wx.ID_CANCEL, label="Kapa&t")
+        kapat_butonu = wx.Button(self, wx.ID_CANCEL, label=_("Kapa&t"))
         buton_duzeni.Add(kapat_butonu, 0, wx.ALL, 5)
 
         duzen.Add(buton_duzeni, 0, wx.CENTER)
@@ -185,22 +231,22 @@ class DetayPenceresi(wx.Dialog):
     def tarayicida_ac(self, event):
         try:
             if not webbrowser.open(self.eser_linki):
-                ui.message("Tarayıcı açılamadı.")
+                ui.message(_("Tarayıcı açılamadı."))
         except Exception:
             log.exception("Engelsiz Nota eser bağlantısı tarayıcıda açılamadı.")
-            ui.message("Tarayıcı açılamadı.")
+            ui.message(_("Tarayıcı açılamadı."))
 
     def bilgileri_kopyala(self, event):
         if not wx.TheClipboard.Open():
-            ui.message("Pano açılamadı.")
+            ui.message(_("Pano açılamadı."))
             return
 
         try:
             wx.TheClipboard.SetData(wx.TextDataObject(self.bilgi_metni))
-            ui.message("Eser bilgileri panoya kopyalandı.")
+            ui.message(_("Eser bilgileri panoya kopyalandı."))
         except Exception:
             log.exception("Engelsiz Nota eser bilgileri panoya kopyalanamadı.")
-            ui.message("Eser bilgileri panoya kopyalanamadı.")
+            ui.message(_("Eser bilgileri panoya kopyalanamadı."))
         finally:
             wx.TheClipboard.Close()
 
@@ -210,10 +256,10 @@ class DetayPenceresi(wx.Dialog):
             if favorileri_kaydet(yeni_favoriler):
                 self.favoriler = yeni_favoriler
                 self.favoride_mi = False
-                self.fav_butonu.SetLabel("&Favorilere ekle")
-                ui.message("Eser favorilerden çıkarıldı.")
+                self.fav_butonu.SetLabel(_("&Favorilere Ekle"))
+                ui.message(_("Eser favorilerden çıkarıldı."))
             else:
-                ui.message("Favoriler dosyası güncellenemedi.")
+                ui.message(_("Favoriler dosyası güncellenemedi."))
             return
 
         yeni_favoriler = [f for f in self.favoriler if f["link"] != self.eser["link"]]
@@ -221,34 +267,34 @@ class DetayPenceresi(wx.Dialog):
         if favorileri_kaydet(yeni_favoriler):
             self.favoriler = yeni_favoriler
             self.favoride_mi = True
-            self.fav_butonu.SetLabel("Favorilerden &çıkar")
-            ui.message("Eser favorilere eklendi.")
+            self.fav_butonu.SetLabel(_("Favorilerden &Çıkar"))
+            ui.message(_("Eser favorilere eklendi."))
         else:
-            ui.message("Favoriler dosyası güncellenemedi.")
+            ui.message(_("Favoriler dosyası güncellenemedi."))
 
 
 class FavorilerPenceresi(wx.Dialog):
     def __init__(self, parent):
-        super(FavorilerPenceresi, self).__init__(parent, title="Engelsiz Nota - Favorilerim")
+        super(FavorilerPenceresi, self).__init__(parent, title=_("Engelsiz Nota - Favorilerim"))
         self.favoriler = favorileri_yukle()
 
         duzen = wx.BoxSizer(wx.VERTICAL)
 
-        etiket = wx.StaticText(self, label="Favori eserleriniz:")
+        etiket = wx.StaticText(self, label=_("Favori eserleriniz:"))
         duzen.Add(etiket, 0, wx.ALL, 5)
 
         self.liste = wx.ListCtrl(self, style=wx.LC_REPORT | wx.LC_SINGLE_SEL)
-        self.liste.InsertColumn(0, "Eser adı", width=300)
-        self.liste.InsertColumn(1, "Besteci", width=150)
-        self.liste.InsertColumn(2, "Eser türü", width=120)
-        self.liste.InsertColumn(3, "Çalgı", width=120)
+        self.liste.InsertColumn(0, _("Eser adı"), width=300)
+        self.liste.InsertColumn(1, _("Besteci"), width=150)
+        self.liste.InsertColumn(2, _("Eser türü"), width=120)
+        self.liste.InsertColumn(3, _("Çalgı"), width=120)
 
         self.listeyi_doldur()
 
         duzen.Add(self.liste, 1, wx.ALL | wx.EXPAND, 5)
         self.liste.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.eser_secildi)
 
-        kapat_butonu = wx.Button(self, wx.ID_CANCEL, label="&Kapat")
+        kapat_butonu = wx.Button(self, wx.ID_CANCEL, label=_("&Kapat"))
         duzen.Add(kapat_butonu, 0, wx.ALL | wx.CENTER, 5)
 
         self.SetSizer(duzen)
@@ -259,7 +305,7 @@ class FavorilerPenceresi(wx.Dialog):
     def listeyi_doldur(self):
         self.liste.DeleteAllItems()
         if not self.favoriler:
-            self.liste.InsertItem(0, "Henüz favorilere eklenmiş bir eser bulunmuyor.")
+            self.liste.InsertItem(0, _("Henüz favorilere eklenmiş bir eser bulunmuyor."))
             self.liste.SetItemState(0, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED)
             return
 
@@ -284,7 +330,7 @@ class FavorilerPenceresi(wx.Dialog):
 
 class EngelsizNotaPenceresi(wx.Dialog):
     def __init__(self, parent):
-        super(EngelsizNotaPenceresi, self).__init__(parent, title="Engelsiz Nota - Veriler yükleniyor...")
+        super(EngelsizNotaPenceresi, self).__init__(parent, title=_("Engelsiz Nota - Veriler yükleniyor..."))
 
         self.arama_sonuclari = []
         self._kapaniyor = False
@@ -292,67 +338,84 @@ class EngelsizNotaPenceresi(wx.Dialog):
 
         self.ana_duzen = wx.BoxSizer(wx.VERTICAL)
 
-        etiket_eser_adi = wx.StaticText(self, label="&Eser adı:")
+        etiket_eser_adi = wx.StaticText(self, label=_("&Eser adı:"))
         self.ana_duzen.Add(etiket_eser_adi, 0, wx.ALL, 5)
         self.eser_adi_kutusu = wx.TextCtrl(self)
         self.ana_duzen.Add(self.eser_adi_kutusu, 0, wx.ALL | wx.EXPAND, 5)
 
-        etiket_kurum = wx.StaticText(self, label="Alındığı kuru&m:")
+        etiket_kurum = wx.StaticText(self, label=_("Alındığı kuru&m:"))
         self.ana_duzen.Add(etiket_kurum, 0, wx.ALL, 5)
-        self.kurum_kutusu = wx.Choice(self, choices=["Yükleniyor..."])
+        self.kurum_kutusu = wx.Choice(self, choices=[_("Yükleniyor...")])
         self.ana_duzen.Add(self.kurum_kutusu, 0, wx.ALL | wx.EXPAND, 5)
 
-        etiket_besteci = wx.StaticText(self, label="&Besteci:")
+        etiket_besteci = wx.StaticText(self, label=_("&Besteci:"))
         self.ana_duzen.Add(etiket_besteci, 0, wx.ALL, 5)
-        self.besteci_kutusu = wx.Choice(self, choices=["Yükleniyor..."])
+        self.besteci_kutusu = wx.Choice(self, choices=[_("Yükleniyor...")])
         self.ana_duzen.Add(self.besteci_kutusu, 0, wx.ALL | wx.EXPAND, 5)
 
-        etiket_eser_turu = wx.StaticText(self, label="Eser &türü:")
+        etiket_eser_turu = wx.StaticText(self, label=_("Eser &türü:"))
         self.ana_duzen.Add(etiket_eser_turu, 0, wx.ALL, 5)
-        self.eser_turu_kutusu = wx.Choice(self, choices=["Yükleniyor..."])
+        self.eser_turu_kutusu = wx.Choice(self, choices=[_("Yükleniyor...")])
         self.ana_duzen.Add(self.eser_turu_kutusu, 0, wx.ALL | wx.EXPAND, 5)
 
-        etiket_calgi = wx.StaticText(self, label="&Çalgı türü:")
+        etiket_calgi = wx.StaticText(self, label=_("&Çalgı türü:"))
         self.ana_duzen.Add(etiket_calgi, 0, wx.ALL, 5)
-        self.calgi_kutusu = wx.Choice(self, choices=["Yükleniyor..."])
+        self.calgi_kutusu = wx.Choice(self, choices=[_("Yükleniyor...")])
         self.ana_duzen.Add(self.calgi_kutusu, 0, wx.ALL | wx.EXPAND, 5)
 
         butonlar_duzeni = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.ara_butonu = wx.Button(self, label="&Ara")
+        self.ara_butonu = wx.Button(self, label=_("&Ara"))
         self.ara_butonu.Bind(wx.EVT_BUTTON, self.arama_yap)
         butonlar_duzeni.Add(self.ara_butonu, 1, wx.ALL | wx.EXPAND, 5)
 
-        self.temizle_butonu = wx.Button(self, label="Temi&zle")
+        self.temizle_butonu = wx.Button(self, label=_("Temi&zle"))
         self.temizle_butonu.Bind(wx.EVT_BUTTON, self.formu_temizle)
         butonlar_duzeni.Add(self.temizle_butonu, 1, wx.ALL | wx.EXPAND, 5)
 
         self.ana_duzen.Add(butonlar_duzeni, 0, wx.ALL | wx.EXPAND, 0)
 
-        etiket_liste = wx.StaticText(self, label="Arama sonuçları:")
+        etiket_liste = wx.StaticText(self, label=_("Arama sonuçları:"))
         self.ana_duzen.Add(etiket_liste, 0, wx.ALL, 5)
 
         self.sonuclar_listesi = wx.ListCtrl(self, style=wx.LC_REPORT | wx.LC_SINGLE_SEL)
-        self.sonuclar_listesi.InsertColumn(0, "Eser adı", width=300)
-        self.sonuclar_listesi.InsertColumn(1, "Besteci", width=150)
-        self.sonuclar_listesi.InsertColumn(2, "Eser türü", width=120)
-        self.sonuclar_listesi.InsertColumn(3, "Çalgı", width=120)
-        self.sonuclar_listesi.InsertItem(0, "Arama yapmak için Ara düğmesine basınız.")
+        self.sonuclar_listesi.InsertColumn(0, _("Eser adı"), width=300)
+        self.sonuclar_listesi.InsertColumn(1, _("Besteci"), width=150)
+        self.sonuclar_listesi.InsertColumn(2, _("Eser türü"), width=120)
+        self.sonuclar_listesi.InsertColumn(3, _("Çalgı"), width=120)
+        self.sonuclar_listesi.InsertItem(0, _("Arama yapmak için Ara düğmesine basınız."))
         self.sonuclar_listesi.SetItemState(0, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED)
         self.ana_duzen.Add(self.sonuclar_listesi, 1, wx.ALL | wx.EXPAND, 5)
 
         self.sonuclar_listesi.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.eser_secildi)
 
-        etiket_sayfa = wx.StaticText(self, label="Sayfa (&P):")
+        etiket_sayfa = wx.StaticText(self, label=_("Sayfa (&P):"))
         self.ana_duzen.Add(etiket_sayfa, 0, wx.ALL, 5)
 
         self.sayfa_kutusu = wx.SpinCtrl(self, value="1", min=1, max=1000)
         self.ana_duzen.Add(self.sayfa_kutusu, 0, wx.ALL | wx.EXPAND, 5)
         self.sayfa_kutusu.Bind(wx.EVT_SPINCTRL, self.sayfa_degistirildi)
 
-        self.kapat_butonu = wx.Button(self, wx.ID_CANCEL, label="&Kapat")
+        alt_butonlar_duzeni = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.favoriler_butonu = wx.Button(self, label=_("&Favorilerim"))
+        self.favoriler_butonu.Bind(wx.EVT_BUTTON, self.favorilerimi_ac)
+        alt_butonlar_duzeni.Add(self.favoriler_butonu, 0, wx.ALL, 5)
+
+        self.yardim_butonu = wx.Button(self, label=_("Yardım (&H)"))
+        self.yardim_butonu.Bind(wx.EVT_BUTTON, self.yardim_ac)
+        alt_butonlar_duzeni.Add(self.yardim_butonu, 0, wx.ALL, 5)
+
+        self.yorum_birak_butonu = wx.Button(self, label=_("Y&orum Bırak"))
+        self.yorum_birak_butonu.Bind(wx.EVT_BUTTON, self.yorum_birak)
+        alt_butonlar_duzeni.Add(self.yorum_birak_butonu, 0, wx.ALL, 5)
+
+        self.kapat_butonu = wx.Button(self, wx.ID_CANCEL, label=_("&Kapat"))
         self.kapat_butonu.Bind(wx.EVT_BUTTON, self.kapat)
-        self.ana_duzen.Add(self.kapat_butonu, 0, wx.ALL | wx.CENTER, 5)
+        alt_butonlar_duzeni.Add(self.kapat_butonu, 0, wx.ALL, 5)
+
+        self.ana_duzen.Add(alt_butonlar_duzeni, 0, wx.ALL | wx.CENTER, 0)
+
         self.Bind(wx.EVT_CLOSE, self.kapat)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.pencere_yok_ediliyor)
 
@@ -360,6 +423,19 @@ class EngelsizNotaPenceresi(wx.Dialog):
         self.eser_adi_kutusu.SetFocus()
 
         self.is_parcacigi_baslat(self.verileri_cek)
+
+    def favorilerimi_ac(self, event):
+        pencere = FavorilerPenceresi(self)
+        try:
+            pencere.ShowModal()
+        finally:
+            pencere.Destroy()
+
+    def yardim_ac(self, event):
+        yardim_dosyasini_ac(self)
+
+    def yorum_birak(self, event):
+        yorum_sayfasini_ac()
 
     def is_parcacigi_baslat(self, hedef, args=()):
         is_parcacigi = threading.Thread(target=hedef, args=args, daemon=True)
@@ -408,7 +484,7 @@ class EngelsizNotaPenceresi(wx.Dialog):
 
         self.sonuclar_listesi.DeleteAllItems()
         self.arama_sonuclari.clear()
-        self.sonuclar_listesi.InsertItem(0, "Arama yapmak için Ara düğmesine basınız.")
+        self.sonuclar_listesi.InsertItem(0, _("Arama yapmak için Ara düğmesine basınız."))
         self.sonuclar_listesi.SetItemState(0, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED)
 
         self.eser_adi_kutusu.SetFocus()
@@ -430,7 +506,7 @@ class EngelsizNotaPenceresi(wx.Dialog):
                     secenekler_listesi.append((gorunen_isim, deger))
 
         if not secenekler_listesi:
-            secenekler_listesi = [("- Tümü -", "All")]
+            secenekler_listesi = [(_("- Tümü -"), "All")]
 
         return secenekler_listesi
 
@@ -447,7 +523,7 @@ class EngelsizNotaPenceresi(wx.Dialog):
 
         except Exception:
             log.exception("Engelsiz Nota katalog seçenekleri alınamadı.")
-            hata_listesi = [("Bağlantı hatası!", "All")]
+            hata_listesi = [(_("Bağlantı hatası!"), "All")]
             wx.CallAfter(self.arayuzu_guncelle_guvenli, hata_listesi, hata_listesi, hata_listesi, hata_listesi)
 
     def kutuyu_doldur(self, kutu, veri_listesi):
@@ -467,7 +543,7 @@ class EngelsizNotaPenceresi(wx.Dialog):
         self.arayuzu_guncelle(kurumlar, besteciler, eser_turleri, calgilar)
 
     def arayuzu_guncelle(self, kurumlar, besteciler, eser_turleri, calgilar):
-        self.SetTitle("Engelsiz Nota e-kütüphane")
+        self.SetTitle(_("Engelsiz Nota e-kütüphane"))
 
         self.kutuyu_doldur(self.kurum_kutusu, kurumlar)
         self.kutuyu_doldur(self.besteci_kutusu, besteciler)
@@ -504,7 +580,7 @@ class EngelsizNotaPenceresi(wx.Dialog):
         self.sayfa_kutusu.Enable(False)
 
         self.sonuclar_listesi.DeleteAllItems()
-        self.sonuclar_listesi.InsertItem(0, "Arama yapılıyor, lütfen bekleyin...")
+        self.sonuclar_listesi.InsertItem(0, _("Arama yapılıyor, lütfen bekleyiniz."))
         self.sonuclar_listesi.SetItemState(0, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED, wx.LIST_STATE_SELECTED | wx.LIST_STATE_FOCUSED)
         self.sonuclar_listesi.SetFocus()
 
@@ -551,12 +627,12 @@ class EngelsizNotaPenceresi(wx.Dialog):
             if not isim:
                 continue
 
-            besteci = self.tablo_hucresini_ayikla(satir, "view-field-bestecisi-table-column") or "Bilinmiyor"
-            tur = self.tablo_hucresini_ayikla(satir, "view-field-eser-t-r-table-column") or "Bilinmiyor"
+            besteci = self.tablo_hucresini_ayikla(satir, "view-field-bestecisi-table-column") or _("Bilinmiyor")
+            tur = self.tablo_hucresini_ayikla(satir, "view-field-eser-t-r-table-column") or _("Bilinmiyor")
             calgi = (
                 self.tablo_hucresini_ayikla(satir, "view-field-alg-t-r-table-column")
                 or self.tablo_hucresini_ayikla(satir, "view-field-calgi-table-column")
-                or "Bilinmiyor"
+                or _("Bilinmiyor")
             )
 
             eserler.append({
@@ -592,7 +668,7 @@ class EngelsizNotaPenceresi(wx.Dialog):
                 self.sonuclari_goster_guvenli,
                 arama_kimligi,
                 [],
-                "Bağlantı hatası nedeniyle arama sonuçları alınamadı.",
+                _("Bağlantı hatası nedeniyle arama sonuçları alınamadı."),
             )
 
     def sonuclari_goster_guvenli(self, arama_kimligi, eser_listesi, hata_mesaji):
@@ -611,7 +687,7 @@ class EngelsizNotaPenceresi(wx.Dialog):
         if hata_mesaji:
             self.sonuclar_listesi.InsertItem(0, hata_mesaji)
         elif not eser_listesi:
-            self.sonuclar_listesi.InsertItem(0, "Aradığınız kriterlere veya sayfaya uygun eser bulunamadı.")
+            self.sonuclar_listesi.InsertItem(0, _("Aradığınız ölçütlere veya sayfaya uygun eser bulunamadı."))
         else:
             self.arama_sonuclari = eser_listesi
             for index, eser in enumerate(eser_listesi):
@@ -636,74 +712,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     def __init__(self):
         super(GlobalPlugin, self).__init__()
-        self.tools_menu = None
-        self.engelsiznota_menu = None
-        self.engelsiznota_menu_item = None
-        self.menu_olustur()
-
-    def menu_olustur(self):
-        self.tools_menu = gui.mainFrame.sysTrayIcon.toolsMenu
-        self.engelsiznota_menu = wx.Menu()
-
-        self.item_engelsiznota = self.engelsiznota_menu.Append(wx.ID_ANY, "Engelsiz Nota'da &Ara...\tCtrl+Shift+E", "Engelsiz Nota arama penceresini açar")
-        gui.mainFrame.sysTrayIcon.Bind(wx.EVT_MENU, self.menu_engelsiznota_ac, self.item_engelsiznota)
-
-        self.item_favoriler = self.engelsiznota_menu.Append(wx.ID_ANY, "&Favorilerim", "Favori eserlerinizi listeler")
-        gui.mainFrame.sysTrayIcon.Bind(wx.EVT_MENU, self.menu_favoriler_ac, self.item_favoriler)
-
-        self.item_yardim = self.engelsiznota_menu.Append(wx.ID_ANY, "&Yardım", "Eklenti kullanım kılavuzunu açar")
-        gui.mainFrame.sysTrayIcon.Bind(wx.EVT_MENU, self.menu_yardim_ac, self.item_yardim)
-
-        self.engelsiznota_menu_item = self.tools_menu.AppendSubMenu(self.engelsiznota_menu, "En&gelsiz Nota")
 
     def terminate(self):
-        try:
-            if getattr(self, "item_engelsiznota", None):
-                gui.mainFrame.sysTrayIcon.Unbind(wx.EVT_MENU, id=self.item_engelsiznota.GetId())
-            if getattr(self, "item_favoriler", None):
-                gui.mainFrame.sysTrayIcon.Unbind(wx.EVT_MENU, id=self.item_favoriler.GetId())
-            if getattr(self, "item_yardim", None):
-                gui.mainFrame.sysTrayIcon.Unbind(wx.EVT_MENU, id=self.item_yardim.GetId())
-            if self.tools_menu and self.engelsiznota_menu_item:
-                self.tools_menu.Remove(self.engelsiznota_menu_item)
-        except Exception:
-            log.exception("Engelsiz Nota araçlar menüsünden kaldırılırken hata oluştu.")
         super(GlobalPlugin, self).terminate()
-
-    def menu_engelsiznota_ac(self, event):
-        self.engelsiznota_pencereyi_baslat()
-
-    def menu_favoriler_ac(self, event):
-        def calistir():
-            pencere = FavorilerPenceresi(gui.mainFrame)
-            pencere.ShowModal()
-            pencere.Destroy()
-        wx.CallAfter(calistir)
-
-    def menu_yardim_ac(self, event):
-        kok_klasor = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        yardim_yollari = [
-            os.path.join(kok_klasor, "doc", "tr", "readme.html"),
-            os.path.join(kok_klasor, "doc", "readme.html"),
-        ]
-
-        for yardim_yolu in yardim_yollari:
-            if os.path.exists(yardim_yolu):
-                try:
-                    os.startfile(yardim_yolu)
-                    return
-                except Exception:
-                    log.exception("Engelsiz Nota yardım dosyası açılamadı.")
-                    ui.message("Yardım dosyası tarayıcıda açılamadı.")
-                    return
-
-        ui.message("Yardım dosyası doc/tr klasöründe bulunamadı.")
 
     def script_engelsiznotaAc(self, gesture):
         self.engelsiznota_pencereyi_baslat()
 
-    script_engelsiznotaAc.__doc__ = "Engelsiz Nota arama penceresini açar."
-    script_engelsiznotaAc.category = "Engelsiz Nota"
+    script_engelsiznotaAc.__doc__ = _("Engelsiz Nota arama penceresini açar.")
+    script_engelsiznotaAc.category = _("Engelsiz Nota")
 
     def engelsiznota_pencereyi_baslat(self):
         def calistir():
@@ -713,5 +730,5 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         wx.CallAfter(calistir)
 
     __gestures = {
-        "kb:control+shift+e": "engelsiznotaAc"
+        "kb:nvda+shift+e": "engelsiznotaAc"
     }
