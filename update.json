@@ -1,6 +1,6 @@
 {
   "surum": "1.1.0",
   "link": "https://github.com/MehmetAykurt/engelsiz-nota/releases/download/v1.1.0/Engelsiz-Nota-v1.1.0.nvda-addon",
-  "sha256": "YAYIN_PAKETI_OLUSTURULDUKTAN_SONRA_GUNCELLENECEK",
+  "sha256": "e53db1e6342f1b2d065a7f47b5bafaeb9057089d1d46f82fd4317c25fa3b29d0",
   "aciklama": "Engelsiz Nota 1.1.0 sürümünde Araçlar menüsü kaldırıldı; Favorilerim, Yardım ve Yorum bırak seçenekleri ana pencereye taşındı. Yorum bırak düğmesi eklenti web sayfasını açacak şekilde düzenlendi, çeviri altyapısı hazırlandı ve belge dosyaları güncellendi."
 }
