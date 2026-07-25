@@ -33,7 +33,6 @@ ANA_SITE_ADRESI = "https://www.engelsiznota.org"
 ESERLER_ADRESI = ANA_SITE_ADRESI + "/eserler"
 KULLANICI_ARACISI = "Mozilla/5.0 (Windows NT 10.0; NVDA; Engelsiz Nota eklentisi)"
 FAVORILER_DOSYASI = os.path.join(globalVars.appArgs.configPath, "engelsiznota_favoriler.json")
-YORUM_SAYFASI_ADRESI = "https://mehmetaykurt.com.tr/erisilebilirlik/engelsiz-nota.html"
 
 
 def html_metnini_temizle(metin):
@@ -159,22 +158,6 @@ def yardim_dosyasini_ac(parent=None):
                 return
 
     ui.message(_("Yardım dosyası doc/tr klasöründe bulunamadı."))
-
-
-def yorum_sayfasini_ac():
-    try:
-        if webbrowser.open(YORUM_SAYFASI_ADRESI):
-            ui.message(_("Engelsiz Nota sayfası tarayıcıda açılıyor."))
-            return
-    except Exception:
-        log.exception("Engelsiz Nota yorum sayfası webbrowser ile açılamadı.")
-
-    try:
-        os.startfile(YORUM_SAYFASI_ADRESI)
-        ui.message(_("Engelsiz Nota sayfası tarayıcıda açılıyor."))
-    except Exception:
-        log.exception("Engelsiz Nota yorum sayfası açılamadı.")
-        ui.message(_("Engelsiz Nota sayfası açılamadı."))
 
 
 class DetayPenceresi(wx.Dialog):
@@ -406,10 +389,6 @@ class EngelsizNotaPenceresi(wx.Dialog):
         self.yardim_butonu.Bind(wx.EVT_BUTTON, self.yardim_ac)
         alt_butonlar_duzeni.Add(self.yardim_butonu, 0, wx.ALL, 5)
 
-        self.yorum_birak_butonu = wx.Button(self, label=_("Y&orum Bırak"))
-        self.yorum_birak_butonu.Bind(wx.EVT_BUTTON, self.yorum_birak)
-        alt_butonlar_duzeni.Add(self.yorum_birak_butonu, 0, wx.ALL, 5)
-
         self.kapat_butonu = wx.Button(self, wx.ID_CANCEL, label=_("&Kapat"))
         self.kapat_butonu.Bind(wx.EVT_BUTTON, self.kapat)
         alt_butonlar_duzeni.Add(self.kapat_butonu, 0, wx.ALL, 5)
@@ -433,9 +412,6 @@ class EngelsizNotaPenceresi(wx.Dialog):
 
     def yardim_ac(self, event):
         yardim_dosyasini_ac(self)
-
-    def yorum_birak(self, event):
-        yorum_sayfasini_ac()
 
     def is_parcacigi_baslat(self, hedef, args=()):
         is_parcacigi = threading.Thread(target=hedef, args=args, daemon=True)

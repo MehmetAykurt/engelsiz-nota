@@ -7,7 +7,7 @@ Eklenti, Engelsiz Nota sistemindeki eserlere daha hızlı, düzenli ve klavye il
 ## Sürüm
 
 ```text
-1.1.0
+1.2.0
 ```
 
 ## Geliştirici
@@ -37,19 +37,11 @@ Engelsiz Nota eklentisinin temel amacı, görme engelli müzisyenlerin, müzik �
 - Eserleri favorilere ekleme ve favorilerden çıkarma.
 - Favori eserleri ayrı pencerede listeleme.
 - Yardım dosyasına doğrudan eklenti penceresinden erişme.
-- Engelsiz Nota web sayfası üzerinden yorum ve geri bildirim bırakma.
 - İleride farklı dillere çevrilebilmesi için hazırlanmış çeviri altyapısı.
 
-## Sürüm 1.1.0 ile Gelen Düzenlemeler
+## Sürüm 1.2.0 ile Gelen Düzenlemeler
 
-- NVDA Araçlar menüsündeki Engelsiz Nota alt menüsü kaldırıldı.
-- Favorilerim, Yardım ve Yorum bırak seçenekleri ana pencereye taşındı.
-- Yorum bırak düğmesi, Engelsiz Nota eklentisine ait web sayfasını açacak biçimde düzenlendi.
-- Girdi Hareketleri bölümünde yalnızca Engelsiz Nota arama penceresini açan komut bırakıldı.
-- Pencere içi kısayollar yalnızca Engelsiz Nota penceresi açıkken çalışacak biçimde korundu.
-- Kullanıcıya görünen metinler gözden geçirildi.
-- Çeviri altyapısı hazırlandı.
-- Yardım dosyası, README.md ve update.json dosyaları 1.1.0 sürümüne göre güncellendi.
+- Çeşitli iyileştirmeler yapıldı.
 
 ## Kullanım
 
@@ -61,7 +53,7 @@ NVDA+Shift+E
 
 Kullanıcı isterse bu kısayolu NVDA menüsünde yer alan **Tercihler > Girdi Hareketleri** bölümünden değiştirebilir.
 
-Girdi Hareketleri bölümünde yalnızca Engelsiz Nota arama penceresini açan komut bulunur. Arama, temizleme, favoriler, yardım, yorum bırakma ve kapatma işlemlerine ait kısayollar yalnızca Engelsiz Nota penceresi açıkken geçerlidir.
+Girdi Hareketleri bölümünde yalnızca Engelsiz Nota arama penceresini açan komut bulunur. Arama, temizleme, favoriler, yardım ve kapatma işlemlerine ait kısayollar yalnızca Engelsiz Nota penceresi açıkken geçerlidir.
 
 ## Ana Pencere
 
@@ -75,7 +67,7 @@ Ana pencerede sırasıyla şu bölümler yer alır:
 - Ara ve Temizle düğmeleri.
 - Arama sonuçları listesi.
 - Sayfa alanı.
-- Favorilerim, Yardım, Yorum bırak ve Kapat düğmeleri.
+- Favorilerim, Yardım ve Kapat düğmeleri.
 
 ## Klavye Kısayolları
 
@@ -92,7 +84,6 @@ Alt+Z: Arama alanlarını temizler.
 Alt+P: Sayfa alanına gider.
 Alt+F: Favorilerim penceresini açar.
 Alt+H: Yardım dosyasını açar.
-Alt+O: Engelsiz Nota web sayfasını açarak yorum bırakma bölümüne erişim sağlar.
 Alt+K: Engelsiz Nota penceresini kapatır.
 ```
 
@@ -109,18 +100,6 @@ engelsiznota_favoriler.json
 ## Gizlilik
 
 Engelsiz Nota eklentisi, arama yapılırken Engelsiz Nota web sitesindeki e-katalog sayfalarına erişir. Bunun dışında favori kayıtlarını, kişisel kullanım verilerini veya kullanıcının bilgisayarındaki herhangi bir dosyayı kendiliğinden bir sunucuya göndermez.
-
-Yorum bırak düğmesi yalnızca kullanıcının isteğiyle Engelsiz Nota eklentisine ait web sayfasını tarayıcıda açar.
-
-## Yorum ve Geri Bildirim
-
-Kullanıcılar, eklentiye ilişkin görüş, öneri ve değerlendirmelerini Engelsiz Nota web sayfası üzerinden iletebilir.
-
-Engelsiz Nota sayfası:
-
-```text
-https://mehmetaykurt.com.tr/erisilebilirlik/engelsiz-nota.html
-```
 
 ## Çeviri Katkıları
 
